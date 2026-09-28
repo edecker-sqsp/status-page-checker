@@ -67,6 +67,16 @@ final class Settings {
         services.removeAll { $0.id == id && !$0.isBuiltIn }
     }
 
+    /// Moves the service `id` to `index` (clamped to the array's bounds).
+    /// Used by drag-and-drop reordering in Settings.
+    func moveService(id: UUID, toIndex index: Int) {
+        guard let from = services.firstIndex(where: { $0.id == id }) else { return }
+        let to = max(0, min(index, services.count - 1))
+        guard from != to else { return }
+        let moved = services.remove(at: from)
+        services.insert(moved, at: to)
+    }
+
     func updateService(id: UUID, _ mutate: (inout ServiceConfig) -> Void) {
         guard let index = services.firstIndex(where: { $0.id == id }) else { return }
         mutate(&services[index])

@@ -15,7 +15,7 @@ WDD polls a configurable list of status pages on an interval and rolls their hea
 Click the menu bar icon to open a two-tab panel:
 
 - **Status** — every monitored service, worst first, with its current health, a description of what's happening (e.g. an open incident's title), the specific affected components, and a link to the real status page. A "last checked" timestamp sits at the bottom.
-- **Settings** — the poll interval, per-service **On**/**Notify** toggles, a form to add your own status page, and a **Launch at login** toggle.
+- **Settings** — the poll interval, per-service **On**/**Notify** toggles (drag a row by its grip handle to reorder the list; the order also breaks ties in the Status tab when healths are equal), a form to add your own status page, and a **Launch at login** toggle.
 
 Ships pre-configured with four services, each individually toggleable:
 

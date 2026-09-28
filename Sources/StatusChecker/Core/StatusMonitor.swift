@@ -32,12 +32,15 @@ final class StatusMonitor {
         reports.map(\.health).max() ?? .operational
     }
 
-    /// Reports for display: worst health first, then name, so problems are
-    /// always at the top.
+    /// Reports for display: worst health first, so problems are always at the
+    /// top, then the user's own ordering from Settings.
     var sortedReports: [ServiceReport] {
-        reports.sorted { lhs, rhs in
+        let userOrder = Dictionary(
+            uniqueKeysWithValues: settings.services.enumerated().map { ($0.element.id, $0.offset) }
+        )
+        return reports.sorted { lhs, rhs in
             if lhs.health != rhs.health { return lhs.health > rhs.health }
-            return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
+            return userOrder[lhs.serviceID, default: .max] < userOrder[rhs.serviceID, default: .max]
         }
     }
 
