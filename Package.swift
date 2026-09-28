@@ -22,8 +22,12 @@ let package = Package(
                 // Without Xcode, this CLT toolchain doesn't put swift-testing's
                 // Testing.framework on the default search path the way `swift
                 // test` expects; point at it explicitly so `import Testing`
-                // resolves.
-                .unsafeFlags(["-F", "/Library/Developer/CommandLineTools/Library/Developer/Frameworks"])
+                // resolves. Likewise its macro plugin (#expect etc.) sits in a
+                // `testing/` subdirectory the compiler doesn't search on its own.
+                .unsafeFlags([
+                    "-F", "/Library/Developer/CommandLineTools/Library/Developer/Frameworks",
+                    "-plugin-path", "/Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing"
+                ])
             ],
             linkerSettings: [
                 // The compile-time search path above doesn't carry over to

@@ -68,7 +68,12 @@ open "What's Down, Doc?.app"
 
 `build.sh` runs `swift build -c release`, assembles `What's Down, Doc?.app` (copying in `Resources/Info.plist` and `Resources/AppIcon.icns`), and ad-hoc code-signs it. That's the whole toolchain — no project file, no full asset catalog (the menu bar icon itself is just an emoji string; the app-icon `.icns` is generated once via `sips`/`iconutil`, not rebuilt by `build.sh`).
 
+Builds natively on both Apple Silicon and Intel — the binary is whatever architecture the machine you build on is.
+
+**One Command-Line-Tools quirk to know about:** the macOS 26+ SDK redeclares SwiftUI's `@State` as a compiler macro whose plugin ships only with full Xcode, so `@State` won't compile with just the CLT. `Sources/StatusChecker/UI/SwiftUIShims.swift` aliases the still-present property-wrapper struct as `@UIState`, and the views use that instead. If you add new view-local state, use `@UIState`, not `@State`. (`@Bindable`, `@FocusState`, etc. are unaffected.)
+
 ### Development
 
 - `swift build` / `swift run` — build/run the debug binary directly (it'll pick up a Dock icon in this mode since it's not running from a proper signed bundle, but the logic and UI all work).
-- `swift run StatusChecker -- --self-check` — runs a built-in, dependency-free set of logic checks (mapping rules, health aggregation, URL detection) against real, recorded API responses. This exists because on a Command-Line-Tools-only machine (no Xcode), `swift test` builds the `swift-testing` suite in `Tests/` but the test runner can't actually execute it (missing Xcode-provided `xctest` hosting). If you do have Xcode installed, `swift test` should run that suite directly instead.
+- `swift test` — runs the `swift-testing` suite in `Tests/`. On a Command-Line-Tools-only machine this needs CLT 26 / Swift 6.4 or newer (older CLT could build the suite but not execute it, for lack of Xcode's `xctest` hosting); `Package.swift` carries the extra framework/plugin search paths that make it work without Xcode.
+- `swift run StatusChecker -- --self-check` — runs a built-in, dependency-free set of logic checks (mapping rules, health aggregation, URL detection) against real, recorded API responses. Predates `swift test` working on CLT-only machines, and still handy as a zero-dependency sanity check of the same logic.

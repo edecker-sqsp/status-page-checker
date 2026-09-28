@@ -7,15 +7,15 @@ struct SettingsTabView: View {
     @Bindable var settings: Settings
     @Bindable var monitor: StatusMonitor
 
-    @State private var intervalText: String = ""
+    @UIState private var intervalText: String = ""
     @FocusState private var intervalFieldFocused: Bool
 
-    @State private var newServiceName = ""
-    @State private var newServiceURL = ""
-    @State private var isVerifying = false
-    @State private var addServiceError: String?
+    @UIState private var newServiceName = ""
+    @UIState private var newServiceURL = ""
+    @UIState private var isVerifying = false
+    @UIState private var addServiceError: String?
 
-    @State private var launchAtLogin = LoginItem.isEnabled
+    @UIState private var launchAtLogin = LoginItem.isEnabled
 
     var body: some View {
         ScrollView {
